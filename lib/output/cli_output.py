@@ -26,7 +26,7 @@ from lib.utils.file_utils import *
 from lib.utils.terminal_size import get_terminal_size
 from thirdparty.colorama import init, Fore, Back, Style
 
-if sys.platform in ["win32", "msys"]:
+if sys.platform in ['win32', 'msys']:
     from thirdparty.colorama.win32 import *
 
 
@@ -38,7 +38,7 @@ class CLIOutput(object):
     def __init__(self, color):
         init()
         self.last_length = 0
-        self.last_output = ""
+        self.last_output = ''
         self.last_in_line = False
         self.mutex = threading.Lock()
         self.blacklists = {}
@@ -58,32 +58,32 @@ class CLIOutput(object):
         self.last_in_line = True
 
     def erase(self):
-        if sys.platform in ["win32", "msys"]:
+        if sys.platform in ['win32', 'msys']:
             csbi = GetConsoleScreenBufferInfo()
-            line = "\b" * int(csbi.dwCursorPosition.X)
+            line = '\b' * int(csbi.dwCursorPosition.X)
             sys.stdout.write(line)
             width = csbi.dwCursorPosition.X
             csbi.dwCursorPosition.X = 0
-            FillConsoleOutputCharacter(STDOUT, " ", width, csbi.dwCursorPosition)
+            FillConsoleOutputCharacter(STDOUT, ' ', width, csbi.dwCursorPosition)
             sys.stdout.write(line)
             sys.stdout.flush()
 
         else:
-            sys.stdout.write("\033[1K")
-            sys.stdout.write("\033[0G")
+            sys.stdout.write('\033[1K')
+            sys.stdout.write('\033[0G')
 
     def new_line(self, string=''):
         if self.last_in_line:
             self.erase()
 
-        if sys.platform in ["win32", "msys"]:
+        if sys.platform in ['win32', 'msys']:
             sys.stdout.write(string)
             sys.stdout.flush()
-            sys.stdout.write("\n")
+            sys.stdout.write('\n')
             sys.stdout.flush()
 
         else:
-            sys.stdout.write(string + "\n")
+            sys.stdout.write(string + '\n')
 
         sys.stdout.flush()
         self.last_in_line = False
@@ -95,7 +95,7 @@ class CLIOutput(object):
 
         # Format message
         try:
-            size = int(response.headers["content-length"])
+            size = int(response.headers['content-length'])
 
         except (KeyError, ValueError):
             size = len(response.body)
@@ -103,16 +103,16 @@ class CLIOutput(object):
         finally:
             content_length = FileUtils.size_human(size)
 
-        show_path = "/" + self.base_path + path
+        show_path = '/' + self.base_path + path
 
         if full_url:
             parsed = urllib.parse.urlparse(self.target)
-            show_path = "{0}://{1}{2}".format(parsed.scheme, parsed.netloc, show_path)
+            show_path = '{0}://{1}{2}'.format(parsed.scheme, parsed.netloc, show_path)
 
-        message = "[{0}] {1} - {2} - {3}".format(
-            time.strftime("%H:%M:%S"),
+        message = '[{0}] {1} - {2} - {3}'.format(
+            time.strftime('%H:%M:%S'),
             status,
-            content_length.rjust(6, " "),
+            content_length.rjust(6, ' '),
             show_path,
         )
 
@@ -130,14 +130,14 @@ class CLIOutput(object):
 
         elif status in range(300, 400):
             message = Fore.CYAN + message + Style.RESET_ALL
-            if "location" in [h.lower() for h in response.headers]:
-                message += "  ->  {0}".format(response.headers["location"])
+            if 'location' in [h.lower() for h in response.headers]:
+                message += '  ->  {0}'.format(response.headers['location'])
 
         else:
             message = Fore.MAGENTA + message + Style.RESET_ALL
 
         if added_to_queue:
-            message += "     (Added to queue)"
+            message += '     (Added to queue)'
 
         with self.mutex:
             self.new_line(message)
@@ -145,15 +145,15 @@ class CLIOutput(object):
     def last_path(self, path, index, length, current_job, all_jobs, rate):
         l, h = get_terminal_size()
 
-        message = "{0:.2f}% | {1} req/s - ".format(self.percentage(index, length), rate)
+        message = '{0:.2f}% | {1} req/s - '.format(self.percentage(index, length), rate)
 
         if all_jobs > 1:
-            message += "Job: {0}/{1} - ".format(current_job, all_jobs)
+            message += 'Job: {0}/{1} - '.format(current_job, all_jobs)
 
         if self.errors:
-            message += "Errors: {0} - ".format(self.errors)
+            message += 'Errors: {0} - '.format(self.errors)
 
-        message += "Last request to: {0}".format(path)
+        message += 'Last request to: {0}'.format(path)
 
         if len(message) >= l:
             message = message[:l - 1]
@@ -167,7 +167,7 @@ class CLIOutput(object):
     def error(self, reason):
         with self.mutex:
             stripped = reason.strip()
-            message = "\n" if reason.startswith("\n") else ""
+            message = '\n' if reason.startswith('\n') else ''
             message += Style.BRIGHT + Fore.WHITE + Back.RED + stripped + Style.RESET_ALL
 
             self.new_line(message)
@@ -184,15 +184,15 @@ class CLIOutput(object):
     def add_config(self, key, value, msg):
         l, _ = get_terminal_size()
         # Escape colours in text to get the real length
-        escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])|\n")
-        particle = Fore.YELLOW + key + ": " + Fore.CYAN + value
+        escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])|\n')
+        particle = Fore.YELLOW + key + ': ' + Fore.CYAN + value
 
-        if len(escape.sub("", msg)) == 0:
-            separator = ""
-        elif len(escape.sub("", msg.splitlines()[-1] + particle)) + 3 > l:
-            separator = "\n"
+        if len(escape.sub('', msg)) == 0:
+            separator = ''
+        elif len(escape.sub('', msg.splitlines()[-1] + particle)) + 3 > l:
+            separator = '\n'
         else:
-            separator = Fore.MAGENTA + " | " + Fore.YELLOW
+            separator = Fore.MAGENTA + ' | ' + Fore.YELLOW
 
         return separator + particle
 
@@ -207,43 +207,43 @@ class CLIOutput(object):
     ):
 
         config = Style.BRIGHT
-        config += self.add_config("Extensions", extensions, config)
+        config += self.add_config('Extensions', extensions, config)
 
         if prefixes:
-            config += self.add_config("Prefixes", prefixes, config)
+            config += self.add_config('Prefixes', prefixes, config)
 
         if suffixes:
-            config += self.add_config("Suffixes", suffixes, config)
+            config += self.add_config('Suffixes', suffixes, config)
 
-        config += self.add_config("HTTP method", method.upper(), config)
-        config += self.add_config("Threads", threads, config)
-        config += self.add_config("Wordlist size", wordlist_size, config)
+        config += self.add_config('HTTP method', method.upper(), config)
+        config += self.add_config('Threads', threads, config)
+        config += self.add_config('Wordlist size', wordlist_size, config)
         config += Style.RESET_ALL
-        config += "\n"
+        config += '\n'
 
         self.new_line(config)
 
     def set_target(self, target, scheme):
-        if not target.startswith(("http://", "https://")) and "://" not in target:
-            target = "{0}://{1}".format(scheme, target)
+        if not target.startswith(('http://', 'https://')) and '://' not in target:
+            target = '{0}://{1}'.format(scheme, target)
 
         self.target = target
 
         config = Style.BRIGHT
-        config += self.add_config("Target", target, config) + "\n"
+        config += self.add_config('Target', target, config) + '\n'
         config += Style.RESET_ALL
 
         self.new_line(config)
 
     def output_file(self, target):
-        self.new_line("Output File: {0}\n".format(target))
+        self.new_line('Output File: {0}\n'.format(target))
 
     def error_log_file(self, target):
-        self.new_line("Error Log: {0}\n".format(target))
+        self.new_line('Error Log: {0}\n'.format(target))
 
     def debug(self, info):
         with self.mutex:
-            line = "[{0}] - {1}".format(time.strftime("%H:%M:%S"), info)
+            line = '[{0}] - {1}'.format(time.strftime('%H:%M:%S'), info)
             self.new_line(line)
 
     def disable_colors(self):

@@ -27,9 +27,9 @@ class PlainTextReport(FileBaseReport):
     def generate_header(self):
         if self.header_written is False:
             self.header_written = True
-            return "# Dirsearch started {0} as: {1}\n\n".format(time.ctime(), ' '.join(sys.argv))
+            return '# Dirsearch started {0} as: {1}\n\n'.format(time.ctime(), ' '.join(sys.argv))
         else:
-            return ""
+            return ''
 
     def generate(self):
         result = self.generate_header()
@@ -37,19 +37,19 @@ class PlainTextReport(FileBaseReport):
         for entry in self.entries:
             for e in entry.results:
                 if (entry.protocol, entry.host, entry.port, entry.base_path, e.path) not in self.written_entries:
-                    result += "{0}  ".format(e.status)
-                    result += "{0}  ".format(FileUtils.size_human(e.get_content_length()).rjust(6, " "))
-                    result += "{0}://{1}:{2}/".format(entry.protocol, entry.host, entry.port)
+                    result += '{0}  '.format(e.status)
+                    result += '{0}  '.format(FileUtils.size_human(e.get_content_length()).rjust(6, ' '))
+                    result += '{0}://{1}:{2}/'.format(entry.protocol, entry.host, entry.port)
                     result += (
-                        "{0}".format(e.path)
-                        if entry.base_path == ""
-                        else "{0}/{1}".format(entry.base_path, e.path)
+                        '{0}'.format(e.path)
+                        if entry.base_path == ''
+                        else '{0}/{1}'.format(entry.base_path, e.path)
                     )
                     location = e.response.redirect
                     if location:
-                        result += "    -> REDIRECTS TO: {0}".format(location)
+                        result += '    -> REDIRECTS TO: {0}'.format(location)
 
-                    result += "\n"
+                    result += '\n'
                     self.written_entries.append((entry.protocol, entry.host, entry.port, entry.base_path, e.path))
 
         return result

@@ -51,7 +51,7 @@ class Response(object):
     @property
     def redirect(self):
         headers = dict((key.lower(), value) for key, value in self.headers.items())
-        return headers.get("location")
+        return headers.get('location')
 
     @property
     def pretty(self):
@@ -59,7 +59,7 @@ class Response(object):
             # Python 3 is only able to download BeautifulSoup4
             from bs4 import BeautifulSoup
         except ImportError:
-            raise Exception("BeautifulSoup pip package must be installed")
+            raise Exception('BeautifulSoup pip package must be installed')
 
         html = BeautifulSoup(self.body)
         return html.prettify()

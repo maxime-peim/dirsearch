@@ -30,8 +30,8 @@ class ScannerException(Exception):
 class Scanner(object):
     def __init__(self, requester, calibration=None, suffix=None, prefix=None):
         self.calibration = calibration
-        self.suffix = suffix if suffix else ""
-        self.prefix = prefix if prefix else ""
+        self.suffix = suffix if suffix else ''
+        self.prefix = prefix if prefix else ''
         self.requester = requester
         self.tester = None
         self.redirect_reg_exp = None
@@ -74,7 +74,7 @@ class Scanner(object):
             self.dynamic_parser = None
 
         self.ratio = float(
-            "{0:.2f}".format(self.dynamic_parser.comparisonRatio)
+            '{0:.2f}'.format(self.dynamic_parser.comparisonRatio)
         )  # Rounding to 2 decimals
 
         # The wildcard response is static
@@ -101,17 +101,17 @@ class Scanner(object):
         self.sign = RandomUtils.rand_string(n=20)
         first_loc = first_loc.replace(first_path, self.sign)
         second_loc = second_loc.replace(second_path, self.sign)
-        reg_exp_start = "^"
-        reg_exp_end = "$"
+        reg_exp_start = '^'
+        reg_exp_end = '$'
 
         for f, s in zip(first_loc, second_loc):
             if f == s:
                 reg_exp_start += re.escape(f)
             else:
-                reg_exp_start += ".*"
+                reg_exp_start += '.*'
                 break
 
-        if reg_exp_start.endswith(".*"):
+        if reg_exp_start.endswith('.*'):
             for f, s in zip(first_loc[::-1], second_loc[::-1]):
                 if f == s:
                     reg_exp_end = re.escape(f) + reg_exp_end
@@ -132,9 +132,9 @@ class Scanner(object):
         if self.redirect_reg_exp and response.redirect:
             path = re.escape(unquote(path))
             # A lot of times, '#' or '?' will be removed in the redirect, cause false positives
-            for char in ["\\#", "\\?"]:
+            for char in ['\\#', '\\?']:
                 if char in path:
-                    path = path.replace(char, "(|" + char) + ")"
+                    path = path.replace(char, '(|' + char) + ')'
 
             redirect_reg_exp = self.redirect_reg_exp.replace(self.sign, path)
 
@@ -152,7 +152,7 @@ class Scanner(object):
         # If the similarity ratio is high enough to proof it's wildcard
         if ratio >= self.ratio:
             return False
-        elif "redirect_to_invalid" in locals() and ratio >= (self.ratio - 0.15):
+        elif 'redirect_to_invalid' in locals() and ratio >= (self.ratio - 0.15):
             return False
 
         return True

@@ -30,13 +30,13 @@ class HTMLReport(FileBaseReport):
         mytemplate = Template(filename=template_file)
 
         metadata = {
-            "command": " ".join(sys.argv),
-            "date": time.ctime()
+            'command': ' '.join(sys.argv),
+            'date': time.ctime()
         }
         results = []
         for entry in self.entries:
             for e in entry.results:
-                header_name = "{0}://{1}:{2}/{3}".format(
+                header_name = '{0}://{1}:{2}/{3}'.format(
                     entry.protocol, entry.host, entry.port, entry.base_path
                 )
 
@@ -49,13 +49,13 @@ class HTMLReport(FileBaseReport):
                     status_color_class = 'text-danger'
 
                 results.append({
-                    "url": header_name + e.path,
-                    "path": e.path,
-                    "status": e.status,
-                    "status_color_class": status_color_class,
-                    "contentLength": FileUtils.size_human(e.get_content_length()),
-                    "contentType": e.response.headers.get("content-type"),
-                    "redirect": e.response.redirect
+                    'url': header_name + e.path,
+                    'path': e.path,
+                    'status': e.status,
+                    'status_color_class': status_color_class,
+                    'contentLength': FileUtils.size_human(e.get_content_length()),
+                    'contentType': e.response.headers.get('content-type'),
+                    'redirect': e.response.redirect
                 })
 
         return mytemplate.render(metadata=metadata, results=json.dumps(results))

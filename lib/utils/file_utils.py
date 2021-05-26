@@ -83,7 +83,7 @@ class FileUtils(object):
         if path_components:
             path = os.path.join(*path_components)
         else:
-            path = ""
+            path = ''
         return path
 
     @staticmethod
@@ -109,11 +109,11 @@ class FileUtils(object):
 
     @staticmethod
     def read(file_name):
-        return open(file_name, "r").read()
+        return open(file_name, 'r').read()
 
     @staticmethod
     def get_lines(file_name):
-        with open(file_name, "r", errors="replace") as fd:
+        with open(file_name, 'r', errors='replace') as fd:
             return fd.read().splitlines()
 
     @staticmethod
@@ -132,17 +132,17 @@ class FileUtils(object):
     @staticmethod
     def size_human(num):
         base = 1024
-        for x in ["B ", "KB", "MB", "GB"]:
+        for x in ['B ', 'KB', 'MB', 'GB']:
             if num < base and num > -base:
-                return "%3.0f%s" % (num, x)
+                return '%3.0f%s' % (num, x)
             num /= base
-        return "%3.0f %s" % (num, "TB")
+        return '%3.0f %s' % (num, 'TB')
 
     @staticmethod
     def write_lines(file_name, lines):
         if type(lines) is list:
-            content = "\n".join(lines)
+            content = '\n'.join(lines)
         else:
             content = lines
-        with open(file_name, "w") as f:
+        with open(file_name, 'w') as f:
             f.writelines(content)

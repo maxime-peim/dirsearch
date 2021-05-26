@@ -21,7 +21,7 @@ import os
 import sys
 
 if sys.version_info < (3, 0):
-    sys.stdout.write("Sorry, dirsearch requires Python 3.x\n")
+    sys.stdout.write('Sorry, dirsearch requires Python 3.x\n')
     sys.exit(1)
 
 from lib.core import ArgumentParser
@@ -43,5 +43,5 @@ class Program(object):
         self.controller = Controller(self.script_path, self.arguments, self.output)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main = Program()

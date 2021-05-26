@@ -28,7 +28,7 @@ class Result(object):
 
     def get_content_length(self):
         try:
-            content_length = int(self.response.headers["content-length"])
+            content_length = int(self.response.headers['content-length'])
         except (KeyError, ValueError):
             content_length = len(self.response.body)
         return content_length
@@ -43,10 +43,10 @@ class Report(object):
         self.results = []
         self.completed = False
 
-        if self.base_path.endswith("/"):
+        if self.base_path.endswith('/'):
             self.base_path = self.base_path[:-1]
 
-        if self.base_path.startswith("/"):
+        if self.base_path.startswith('/'):
             self.base_path = self.base_path[1:]
 
     def add_result(self, path, status, response):
@@ -69,17 +69,17 @@ class ReportManager(object):
 
     def write_report(self):
         if self.report_obj is None:
-            if self.format == "simple":
+            if self.format == 'simple':
                 report = SimpleReport(self.output, self.reports)
-            elif self.format == "json":
+            elif self.format == 'json':
                 report = JSONReport(self.output, self.reports)
-            elif self.format == "xml":
+            elif self.format == 'xml':
                 report = XMLReport(self.output, self.reports)
-            elif self.format == "md":
+            elif self.format == 'md':
                 report = MarkdownReport(self.output, self.reports)
-            elif self.format == "csv":
+            elif self.format == 'csv':
                 report = CSVReport(self.output, self.reports)
-            elif self.format == "html":
+            elif self.format == 'html':
                 report = HTMLReport(self.output, self.reports)
             else:
                 report = PlainTextReport(self.output, self.reports)

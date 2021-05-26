@@ -75,7 +75,7 @@ class Dictionary(object):
 
     @classmethod
     def quote(cls, string):
-        return urllib.parse.quote(string, safe="!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+        return urllib.parse.quote(string, safe='!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~')
 
     """
     Dictionary.generate() behaviour
@@ -87,7 +87,7 @@ class Dictionary(object):
     Forced extensions wordlist (NEW):
       This type of wordlist processing is a mix between classic processing
       and DirBuster processing.
-          1. If %EXT% keyword is present in the line, immediately process as "classic dirsearch" (1).
+          1. If %EXT% keyword is present in the line, immediately process as 'classic dirsearch' (1).
           2. If the line does not include the special word AND is NOT terminated by a slash,
             append one with each extension APPENDED (line.ext) and ONLYE ONE with a slash.
           3. If the line does not include the special word and IS ALREADY terminated by slash,
@@ -95,8 +95,8 @@ class Dictionary(object):
     """
 
     def generate(self):
-        reext = re.compile(r"\%ext\%", re.IGNORECASE).sub
-        renoforce = re.compile(r"\%noforce\%", re.IGNORECASE).sub
+        reext = re.compile(r'\%ext\%', re.IGNORECASE).sub
+        renoforce = re.compile(r'\%noforce\%', re.IGNORECASE).sub
         find = re.findall
         custom = []
         result = []
@@ -105,33 +105,33 @@ class Dictionary(object):
         for dict_file in self.dictionary_files:
             for line in list(filter(None, dict.fromkeys(dict_file.get_lines()))):
                 # Skip comments
-                if line.lstrip().startswith("#"):
+                if line.lstrip().startswith('#'):
                     continue
 
-                if line.startswith("/"):
+                if line.startswith('/'):
                     line = line[1:]
 
                 if self._no_extension:
-                    line = line[0] + line[1:].split(".")[0]
-                    if line == ".":
+                    line = line[0] + line[1:].split('.')[0]
+                    if line == '.':
                         continue
 
                 # Check if the line has the %NOFORCE% keyword
-                if "%noforce%" in line.lower():
+                if '%noforce%' in line.lower():
                     noforce = True
-                    line = renoforce("", line)
+                    line = renoforce('', line)
                 else:
                     noforce = False
 
                 # Skip if the path contains excluded extensions
                 if self._exclude_extensions:
                     if any(
-                        [find("." + extension, line) for extension in self._exclude_extensions]
+                        [find('.' + extension, line) for extension in self._exclude_extensions]
                     ):
                         continue
 
                 # Classic dirsearch wordlist processing (with %EXT% keyword)
-                if "%ext%" in line.lower():
+                if '%ext%' in line.lower():
                     for extension in self._extensions:
                         newline = reext(extension, line)
 
@@ -140,7 +140,7 @@ class Dictionary(object):
 
                 # If forced extensions is used and the path is not a directory ... (terminated by /)
                 # process line like a forced extension.
-                elif self._forced_extensions and not line.rstrip().endswith("/") and not noforce:
+                elif self._forced_extensions and not line.rstrip().endswith('/') and not noforce:
                     quoted = self.quote(line)
 
                     for extension in self._extensions:
@@ -148,18 +148,18 @@ class Dictionary(object):
                         if not extension.strip():
                             result.append(quoted)
                         else:
-                            result.append(quoted + "." + extension)
+                            result.append(quoted + '.' + extension)
 
                     result.append(quoted)
-                    result.append(quoted + "/")
+                    result.append(quoted + '/')
 
                 # Append line unmodified.
                 else:
                     quoted = self.quote(line)
 
-                    if self._only_selected and not line.rstrip().endswith("/") and "." in line:
+                    if self._only_selected and not line.rstrip().endswith('/') and '.' in line:
                         for extension in self._extensions:
-                            if line.endswith("." + extension):
+                            if line.endswith('.' + extension):
                                 result.append(quoted)
                                 break
 
@@ -176,7 +176,7 @@ class Dictionary(object):
         # Adding suffixes for finding backups etc
         if self._suffixes:
             for res in list(dict.fromkeys(result)):
-                if not res.rstrip().endswith("/"):
+                if not res.rstrip().endswith('/'):
                     for suff in self._suffixes:
                         if not res.rstrip().endswith(suff):
                             custom.append(res + suff)

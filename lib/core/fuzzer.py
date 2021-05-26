@@ -61,8 +61,8 @@ class Fuzzer(object):
         self.error_callbacks = error_callbacks
         self.matches = []
         self.scanners = {
-            "prefixes": {},
-            "suffixes": {},
+            'prefixes': {},
+            'suffixes': {},
         }
 
     def wait(self, timeout=None):
@@ -77,33 +77,33 @@ class Fuzzer(object):
     def setup_scanners(self):
         if len(self.scanners):
             self.scanners = {
-                "prefixes": {},
-                "suffixes": {},
+                'prefixes': {},
+                'suffixes': {},
             }
 
         # Default scanners (wildcard testers)
         self.default_scanner = Scanner(self.requester)
-        self.prefixes.append(".")
-        self.suffixes.append("/")
+        self.prefixes.append('.')
+        self.suffixes.append('/')
 
         for prefix in self.prefixes:
-            self.scanners["prefixes"][prefix] = Scanner(
+            self.scanners['prefixes'][prefix] = Scanner(
                 self.requester, prefix=prefix
             )
 
         for suffix in self.suffixes:
-            self.scanners["suffixes"][suffix] = Scanner(
+            self.scanners['suffixes'][suffix] = Scanner(
                 self.requester, suffix=suffix
             )
 
         for extension in self.dictionary.extensions:
-            if "." + extension not in self.scanners["suffixes"]:
-                self.scanners["suffixes"]["." + extension] = Scanner(
-                    self.requester, suffix="." + extension
+            if '.' + extension not in self.scanners['suffixes']:
+                self.scanners['suffixes']['.' + extension] = Scanner(
+                    self.requester, suffix='.' + extension
                 )
 
         if self.exclude_content:
-            if self.exclude_content.startswith("/"):
+            if self.exclude_content.startswith('/'):
                 self.exclude_content = self.exclude_content[1:]
             self.calibration = Scanner(self.requester, calibration=self.exclude_content)
 
@@ -118,22 +118,22 @@ class Fuzzer(object):
 
     def get_scanner_for(self, path):
         # Clean the path, so can check for extensions/suffixes
-        path = path.split("?")[0].split("#")[0]
+        path = path.split('?')[0].split('#')[0]
 
         if self.exclude_content:
             yield self.calibration
 
         for prefix in self.prefixes:
             if path.startswith(prefix):
-                yield self.scanners["prefixes"][prefix]
+                yield self.scanners['prefixes'][prefix]
 
         for suffix in self.suffixes:
             if path.endswith(suffix):
-                yield self.scanners["suffixes"][suffix]
+                yield self.scanners['suffixes'][suffix]
 
         for extension in self.dictionary.extensions:
-            if path.endswith("." + extension):
-                yield self.scanners["suffixes"]["." + extension]
+            if path.endswith('.' + extension):
+                yield self.scanners['suffixes']['.' + extension]
 
         yield self.default_scanner
 
@@ -234,7 +234,7 @@ class Fuzzer(object):
 
                 except RequestException as e:
                     for callback in self.error_callbacks:
-                        callback(path, e.args[0]["message"])
+                        callback(path, e.args[0]['message'])
 
                     continue
 
